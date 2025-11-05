@@ -29,10 +29,8 @@ while read -r LINE; do
 
   echo "==> Running ${name} (TL=${tl}s, seed=${seed})"
 
-  # 计时（秒）
   start=$(date +%s)
   rc=0
-    # 无 timeout：直接运行（由程序内部自控时间）
     "${BIN_SOLVER}" "${tl}" "${seed}" < "${inst}" > "${out}" || rc=$?
   end=$(date +%s)
   elapsed=$((end - start))
@@ -41,9 +39,7 @@ while read -r LINE; do
 
   if [[ -f "$out" ]]; then
     "${BIN_VALID}" "${inst}" "${out}" | tee "${rep}" >/dev/null
-    # 解析机器可读第一行
     first=$(head -n1 "${rep}")
-    # 形如：N=... E=... Cref=... colors=... conflicts=...
     N=$(echo "$first" | awk '{for(i=1;i<=NF;i++) if($i~"^N="){split($i,a,"="); print a[2]}}')
     E=$(echo "$first" | awk '{for(i=1;i<=NF;i++) if($i~"^E="){split($i,a,"="); print a[2]}}')
     Cref=$(echo "$first" | awk '{for(i=1;i<=NF;i++) if($i~"^Cref="){split($i,a,"="); print a[2]}}')
